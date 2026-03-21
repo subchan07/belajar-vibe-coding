@@ -1,6 +1,8 @@
 import { Elysia } from "elysia";
+import { usersRoutes } from "./routes/users-routes";
 
 const app = new Elysia()
+    .use(usersRoutes)
     .get("/", () => "Hello Elysia")
     .get("/health", () => ({ status: "ok" }))
     .listen(3000);

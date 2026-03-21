@@ -1,5 +1,6 @@
 import { Elysia, t } from "elysia";
 import { UsersService } from "../services/users-service";
+import { authPlugin } from "../middlewares/auth-middleware";
 
 export const usersRoutes = new Elysia({ prefix: "/api" })
     .post("/users", async ({ body, set }) => {
@@ -39,16 +40,10 @@ export const usersRoutes = new Elysia({ prefix: "/api" })
             password: t.String(),
         })
     })
-    .get("/users/current", async ({ headers, set }) => {
-        const authHeader = headers.authorization;
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            set.status = 401;
-            return { error: "Unauthorized" };
-        }
-
-        const token = authHeader!.split(" ")[1]!;
+    .use(authPlugin)
+    .get("/users/current", async ({ token, set }) => {
         try {
-            const result = await UsersService.getCurrentUser(token);
+            const result = await UsersService.getCurrentUser(token!);
             return result;
         } catch (error: any) {
             if (error.message === "Unauthorized") {
@@ -59,16 +54,9 @@ export const usersRoutes = new Elysia({ prefix: "/api" })
             return { error: "Internal Server Error" };
         }
     })
-    .delete("/users/logout", async ({ headers, set }) => {
-        const authHeader = headers.authorization;
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            set.status = 401;
-            return { error: "Unauthorized" };
-        }
-
-        const token = authHeader!.split(" ")[1]!;
+    .delete("/users/logout", async ({ token, set }) => {
         try {
-            const result = await UsersService.logout(token);
+            const result = await UsersService.logout(token!);
             return result;
         } catch (error: any) {
             if (error.message === "Unauthorized") {

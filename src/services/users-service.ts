@@ -53,9 +53,37 @@ export class UsersService {
         // Store session in database
         await db.insert(sessions).values({
             token,
-            userId: BigInt(user.id),
+            userId: user.id as any,
         });
 
         return { data: token };
+    }
+
+    static async getCurrentUser(token: string) {
+        // Find session and user
+        const sessionWithUser = await db.query.sessions.findFirst({
+            where: eq(sessions.token, token),
+        });
+
+        if (!sessionWithUser) {
+            throw new Error("Unauthorized");
+        }
+
+        const user = await db.query.users.findFirst({
+            where: eq(users.id, sessionWithUser.userId),
+        });
+
+        if (!user) {
+            throw new Error("Unauthorized");
+        }
+
+        return {
+            data: {
+                id: Number(user.id),
+                name: user.name,
+                email: user.email,
+                created_at: user.createdAt,
+            }
+        };
     }
 }

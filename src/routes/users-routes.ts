@@ -17,9 +17,9 @@ export const usersRoutes = new Elysia({ prefix: "/api" })
         }
     }, {
         body: t.Object({
-            name: t.String(),
-            email: t.String(),
-            password: t.String(),
+            name: t.String({ maxLength: 255 }),
+            email: t.String({ maxLength: 255 }),
+            password: t.String({ maxLength: 255 }),
         })
     })
     .post("/users/login", async ({ body, set }) => {
@@ -36,8 +36,8 @@ export const usersRoutes = new Elysia({ prefix: "/api" })
         }
     }, {
         body: t.Object({
-            email: t.String(),
-            password: t.String(),
+            email: t.String({ maxLength: 255 }),
+            password: t.String({ maxLength: 255 }),
         })
     })
     .use(authPlugin)

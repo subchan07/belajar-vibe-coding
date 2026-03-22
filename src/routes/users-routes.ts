@@ -105,7 +105,8 @@ export const usersRoutes = new Elysia({ prefix: "/api" })
         detail: {
             summary: 'Get Current User',
             description: 'Endpoint untuk mendapatkan user yang sedang login',
-            tags: ['Users']
+            tags: ['Users'],
+            security: [{ bearerAuth: [] }]
         }
     })
     .delete("/users/logout", async ({ token, set }) => {
@@ -135,6 +136,7 @@ export const usersRoutes = new Elysia({ prefix: "/api" })
         detail: {
             summary: 'Logout User',
             description: 'Endpoint untuk logout user',
-            tags: ['Users']
+            tags: ['Users'],
+            security: [{ bearerAuth: [] }]
         }
     });

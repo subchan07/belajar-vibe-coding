@@ -13,9 +13,19 @@ const app = new Elysia()
             },
             tags: [
                 { name: 'Users', description: 'User Management' }
-            ]
+            ],
+            components: {
+                securitySchemes: {
+                    bearerAuth: {
+                        type: 'http',
+                        scheme: 'bearer',
+                        bearerFormat: 'JWT'
+                    }
+                }
+            }
         }
     }))
+
     .use(usersRoutes)
     .get("/", () => "Hello Elysia")
     .get("/health", () => ({ status: "ok" }))
